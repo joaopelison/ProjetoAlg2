@@ -15,9 +15,22 @@ void insereEntrada(int valor){
 	Novo->prox = Inicio;
 	Inicio = Novo;
 }
-
-int buscaMaior(int valor){
-	
-	
-	
-}
+void buscaMaior(int valor){
+	SNo *Novo = Inicio;
+	int cont=0;
+	if(Novo == NULL){
+		printf("Lista Vazia \n\n");
+		return;
+	}
+	else{
+		while(Novo != NULL){
+			if(Novo->chave == valor){
+				printf("achei o valor %i! \n\n",valor);
+				cont++;
+			}
+		Novo = Novo->prox;
+		}
+		if (cont == 0){
+			printf("nao achei o valor %i \n\n ",valor);
+		}
+	}
