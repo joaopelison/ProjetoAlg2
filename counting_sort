@@ -1,0 +1,23 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include <locale.h>
+typedef struct SNo{
+	int chave;
+	struct SNo *prox;
+}SNo;
+
+SNo *Inicio = NULL;
+
+void insereEntrada(int valor){
+	
+	SNo *Novo = (SNo *)malloc(sizeof(SNo));
+	Novo->chave = valor;
+	Novo->prox = Inicio;
+	Inicio = Novo;
+}
+
+int buscaMaior(int valor){
+	
+	
+	
+}
