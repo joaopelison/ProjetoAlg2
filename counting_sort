@@ -2,10 +2,65 @@
 #include<stdlib.h>
 #include <locale.h>
 
+typedef struct SNo{
+	int chave;
+	struct SNo *prox;
+}SNo;
 
+typedef struct Lista{
+	struct SNo *Inicio;
+	struct SNo *Fim;
+}Lista;
 
+Lista * cria_lista(){
+	Lista *L = malloc(sizeof(Lista));
+	L->Inicio = L->Fim = NULL;
+	return L;
+	
+}
+void insere(int valor, Lista *L){
+    SNo *Novo = malloc(sizeof(SNo));
+    Novo->chave = valor;
+    Novo -> prox = NULL;
+	if(L->Inicio==NULL){
+		L->Inicio=L->Fim=Novo;
+	}
+	else{
+ 	Novo->prox =L->Inicio; 	
+	}
+	L->Inicio = Novo;		
+}
 
-
+void imprime(Lista *L) {
+	if(L->Inicio == NULL ){
+		printf("Lista Vazia\n");
+		return;
+	}
+	SNo *Novo =	L->Inicio;
+	while(Novo != NULL){
+		printf(" %i -> ",Novo->chave);
+		Novo = Novo->prox;
+	}
+	printf("NULL\n");
+}
+	
+int buscaMaior(Lista *L){
+	SNo *temp = L->Inicio;
+	int maior;
+	maior  = temp->chave;
+	temp=temp->prox;
+	while(temp != NULL){
+		if(temp->chave  > maior){
+			maior = temp->chave;
+		}
+		temp = temp->prox;
+	}	
+	maior++;
+	return maior;
+}	
+	
+	
+	
 void inicializandoVet(int *vetorA, int *vetorS){
     int i, j;
     //inicializando vetores com zero 
@@ -16,8 +71,7 @@ void inicializandoVet(int *vetorA, int *vetorS){
         vetorS[i] =  0;
     }   
 }
-
-void entradaValores(int *vetorE){
+/*void entradaValores(int *vetorE){
     setlocale(LC_ALL, "Portuguese");
     int i;
     //Entrada de valores
@@ -29,20 +83,26 @@ void entradaValores(int *vetorE){
             i--;
         }
     }
-}
-
-void contagemVetAux(int *vetorA, int *vetorE){
-    int i, j;
+}*/
+void contagemVetAux(int *vetorA, Lista *L,int tam){
+   int i;
+    SNo *temp = L->Inicio;
+    while(temp != NULL){
+    	for (i=0;i<tam;i ++){
+    		if(temp->chave == i){
+    			vetorA[i]++;
+			}	
+		}
+	}
     //Fazendo a contagem de objetos do vetor auxiliar 
-    for(i=0;i<16;i++){
+  /*  for(i=0;i<16;i++){
         for(j=0;j<17;j++){
             if(vetorE[i] == j){
                 vetorA[j] ++;
             }
         }
-    }
+    }*/
 }
-
 void modifVetAux(int *vetorA, int *vetorE, int *vetorS){
     int i;
     //Modificando vetor auxiliar de forma que cada elemento em cada indice armazena a soma das contagens anteriores 
@@ -50,7 +110,6 @@ void modifVetAux(int *vetorA, int *vetorE, int *vetorS){
         vetorA[i] = vetorA[i]+vetorA[i-1];
     }
 }
-
 void saidaVet(int *vetorA, int *vetorE, int *vetorS){
     int i, j;
     //Utilizando vetor auxiliar para gerar a saida ordenada do nosso vetor de entrada 
@@ -63,7 +122,6 @@ void saidaVet(int *vetorA, int *vetorE, int *vetorS){
         }
     }
 }
-
 void imprimeSaida(int *vetorS){
     setlocale(LC_ALL, "Portuguese");
     int i;
@@ -77,15 +135,17 @@ void imprimeSaida(int *vetorS){
         printf("%i >= ",vetorS[i]);
     }*/
 }
-
 int main(){
     //Pedindo pro usuario mostrar o tamanho do vetor de entrada e de
     int tam;
-    printf("Digite o tamanho do vetor de entrada: \n");
-    scanf("%i",tam);
+    Lista *L1;
+    L1 = cria_lista();
+	setlocale(LC_ALL,"Portuguese");
+	//tam = buscaMaior(L1);   
+   
     // declaração de vetores
-    int *vetorAux[17],*entrada,*saida[16];
-    entrada = calloc(tam, sizeof(int));
+    int *vetorAux,*vetorSaida;
+    /*entrada = calloc(tam, sizeof(int));
     
     inicializandoVet(vetorAux, saida);
     entradaValores(entrada);
@@ -93,6 +153,43 @@ int main(){
     modifVetAux(vetorAux, entrada, saida);
     saidaVet(vetorAux, entrada, saida);
     imprimeSaida(saida);
-    
-return 0;
+    */
+    int input, valor;
+  
+    while(1){
+        printf("1. Insere valor na entrada \n");
+        printf("2. Imprime entrada\n");
+        printf("3. Termino de inserção , crie o vetor auxiliar\n");
+        printf("4. modificar vetor auxiliar para ordenação\n");
+		printf("5. Sair\n");
+       // printf("5. Remove\n");
+		printf("Option: ");
+        scanf( "%d", &input);
+         
+        switch(input) {
+            case 1:
+                printf("Informe o valor a ser inserido:\n");
+                scanf("%d", &valor);
+                insere(valor,L1);
+                break;
+            case 2:
+                imprime(L1);
+                break;
+            case 3:
+                tam = buscaMaior(L1); 
+				//printf("%i",tam);  
+        		vetorAux = calloc(tam,sizeof(int));
+                
+                break;	
+            case 4:
+                contagemVetAux(vetorAux,L1,buscaMaior(L1));
+                break;
+            case 5:
+                printf("Finalizando programa!\n");
+                exit(1);
+			default:
+                printf("Digite uma opcao valida!\n");
+        }
+    }
+	return 0;
 }
