@@ -1,0 +1,159 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include <locale.h>
+
+typedef struct SNo{
+    int chave;
+    struct SNo *prox;
+}SNo;
+
+typedef struct Lista{
+    int cont;
+    struct SNo *Inicio;
+    struct SNo *Fim;
+}Lista;
+
+Lista * cria_lista(){
+    Lista *L = malloc(sizeof(Lista));
+    L->Inicio = L->Fim = NULL;
+    return L;
+    
+}
+void insere(int valor, Lista *L){
+    L->cont++;
+    SNo *Novo = malloc(sizeof(SNo));
+    Novo->chave = valor;
+    Novo -> prox = NULL;
+    if(L->Inicio==NULL){
+        L->Inicio= Novo;
+    }
+    else{
+        L->Fim->prox = Novo;     
+    }
+    L->Fim = Novo;        
+}
+
+void imprime(Lista *L) {
+    if(L->Inicio == NULL ){
+        printf("Lista Vazia\n");
+        return;
+    }
+    SNo *Novo =    L->Inicio;
+    while(Novo != NULL){
+        printf(" %i -> ",Novo->chave);
+        Novo = Novo->prox;
+    }
+    printf("NULL\n");
+}
+    
+int buscaMaior(Lista *L){
+    SNo *temp = L->Inicio;
+    int maior;
+    maior  = temp->chave;
+    temp=temp->prox;
+    while(temp != NULL){
+        if(temp->chave  > maior){
+            maior = temp->chave;
+        }
+        temp = temp->prox;
+    }    
+    maior++;
+    return maior;
+}    
+void inicializandoVet(int *vetor){
+    int i;
+    //inicializando vetores com zero 
+    for(i=0;i<17;i++){
+        vetor[i] =  0;
+    }
+}
+
+void contagemVetAux(int *vetorA, Lista *L,int tam){
+   //Fazendo a contagem de objetos do vetor auxiliar 
+    int i;
+    SNo *temp = L->Inicio;
+    while(temp != NULL){
+        for (i=0;i<tam;i ++){
+            if(temp->chave == i){
+                vetorA[i]++;
+            }    
+        }
+        temp = temp->prox;
+    }
+}
+void modifVetAux(int *vetorA,int tam){
+    int i;
+    //Modificando vetor auxiliar de forma que cada elemento em cada indice armazena a soma das contagens anteriores 
+    for(i=1;i<tam;i++){
+        vetorA[i] = vetorA[i]+vetorA[i-1];
+    }
+}
+void saidaVet(int *vetorA,Lista *L, int *vetorS,int tam){
+    
+    //Utilizando vetor auxiliar para gerar a saida ordenada do nosso vetor de entrada 
+   int i;
+   SNo *temp = L->Inicio;
+   while(temp != NULL){
+        for (i=tam;i>=0;i--){
+            if(temp->chave == i){
+                vetorS[vetorA[i]] = temp->chave;
+                vetorA[i]--;
+            }    
+        }
+        temp = temp->prox;
+    }
+}
+void imprimeSaida(int *vetorS,int tam){
+    setlocale(LC_ALL, "Portuguese");
+    int i;
+    //imprimindo a saida
+    printf("\n O resultado da ordenção de forma crescente é: \n"); 
+    for(i=1 ;i <tam; i++){
+        printf("%i <= ",vetorS[i]);
+    }
+}
+int main(){
+    //Pedindo pro usuario mostrar o tamanho do vetor de entrada e de
+    int tam;
+    Lista *L1;
+    L1 = cria_lista();
+    setlocale(LC_ALL,"Portuguese");
+    L1->cont = 1;
+    // declaração de vetores
+    int *vetorAux,*vetorSaida;
+    //entrada = calloc(tam, sizeof(int));
+ int i;
+    insere(2,L1);
+    insere(3,L1);
+    insere(1,L1);
+    insere(9,L1);
+    insere(2,L1);
+    insere(3,L1);
+    insere(1,L1);
+    insere(4,L1);
+    insere(2,L1);
+    insere(3,L1);
+    insere(1,L1);
+    insere(4,L1);
+
+    imprime(L1);
+
+    tam = buscaMaior(L1);     
+    vetorAux = calloc(tam,sizeof(int));
+    contagemVetAux(vetorAux,L1,buscaMaior(L1));
+    modifVetAux(vetorAux,buscaMaior(L1));
+	for(i=0;i<tam;i++){
+		printf("%i->",vetorAux[i]);
+	}
+	printf("\n");
+	vetorSaida = calloc(L1->cont,sizeof(int));
+    inicializandoVet(vetorSaida);
+    imprimeSaida(vetorSaida,L1->cont);
+    saidaVet(vetorAux,L1,vetorSaida,L1->cont);
+    imprimeSaida(vetorSaida,L1->cont);
+                
+             
+    return 0;
+}
+
+/*Para alguns casos, o vetor de saída não funciona como deveria*/
